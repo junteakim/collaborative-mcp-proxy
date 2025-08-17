@@ -54,30 +54,64 @@ class DataParser {
       }
     }
     
-    // Extract temperature (°C, °F, K)
-    const tempMatch = text.match(/(\d+\.?\d*)\s*°?(c|f|k|celsius|fahrenheit|kelvin)/i);
-    if (tempMatch) {
-      let temp = parseFloat(tempMatch[1]);
-      const unit = tempMatch[2].toLowerCase();
+    // Extract temperature (°C, °F, K) - improved to find highest value
+    const tempMatches = text.match(/(\d+\.?\d*)\s*°?(c|f|k|celsius|fahrenheit|kelvin)/gi);
+    if (tempMatches && tempMatches.length > 0) {
+      let maxTemp = -999;
       
-      // Convert to Celsius
-      if (unit === 'f' || unit === 'fahrenheit') temp = (temp - 32) * 5/9;
-      if (unit === 'k' || unit === 'kelvin') temp = temp - 273.15;
+      for (const match of tempMatches) {
+        const numbers = match.match(/(\d+\.?\d*)/);
+        const units = match.match(/(c|f|k|celsius|fahrenheit|kelvin)/i);
+        
+        if (numbers && units) {
+          let temp = parseFloat(numbers[1]);
+          const unit = units[1].toLowerCase();
+          
+          // Convert to Celsius for comparison
+          let tempInC = temp;
+          if (unit === 'f' || unit === 'fahrenheit') tempInC = (temp - 32) * 5/9;
+          if (unit === 'k' || unit === 'kelvin') tempInC = temp - 273.15;
+          
+          // Take the highest reasonable temperature (likely the design temp)
+          if (tempInC > maxTemp && tempInC < 1000) { // reasonable upper limit
+            maxTemp = tempInC;
+          }
+        }
+      }
       
-      data.temperature = temp;
+      if (maxTemp > -999) {
+        data.temperature = maxTemp;
+      }
     }
     
-    // Extract diameter/ID (mm, m, inches)
-    const diameterMatch = text.match(/(diameter|id|inner\s*diameter)[\s:]*(\d+\.?\d*)\s*(mm|m|inch|inches|")/i);
-    if (diameterMatch) {
-      let diameter = parseFloat(diameterMatch[2]);
-      const unit = diameterMatch[3].toLowerCase();
+    // Extract diameter/ID (mm, m, inches) - improved regex
+    const diameterMatches = text.match(/(\d+\.?\d*)\s*(millimeters?|mm|meters?|m|inches?|inch|")/gi);
+    if (diameterMatches && diameterMatches.length > 0) {
+      let maxDiameter = 0;
       
-      // Convert to mm
-      if (unit === 'm') diameter = diameter * 1000;
-      if (unit === 'inch' || unit === 'inches' || unit === '"') diameter = diameter * 25.4;
+      for (const match of diameterMatches) {
+        const numbers = match.match(/(\d+\.?\d*)/);
+        const units = match.match(/(millimeters?|mm|meters?|m|inches?|inch|")/i);
+        
+        if (numbers && units) {
+          let diameter = parseFloat(numbers[1]);
+          const unit = units[1].toLowerCase();
+          
+          // Convert to mm
+          let diameterInMm = diameter;
+          if (unit.includes('meter') || unit === 'm') diameterInMm = diameter * 1000;
+          if (unit.includes('inch') || unit === '"') diameterInMm = diameter * 25.4;
+          
+          // Take the largest diameter (likely the vessel diameter)
+          if (diameterInMm > maxDiameter && diameterInMm < 50000) { // reasonable upper limit
+            maxDiameter = diameterInMm;
+          }
+        }
+      }
       
-      data.diameter = diameter;
+      if (maxDiameter > 0) {
+        data.diameter = maxDiameter;
+      }
     }
     
     // Extract material
