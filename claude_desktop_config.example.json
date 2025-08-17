@@ -1,0 +1,30 @@
+{
+  "mcpServers": {
+    "collaborative-proxy": {
+      "command": "node",
+      "args": ["/private/tmp/collaborative-workspace/mcp-proxy-server/index.js"],
+      "env": {
+        "NODE_ENV": "production"
+      }
+    },
+    
+    "// NOTE": "Keep your existing MCP configurations below",
+    "// Example existing MCPs": {
+      "gemini-cli": {
+        "command": "npx",
+        "args": ["-y", "@google/generative-ai-cli", "mcp"]
+      },
+      "codex": {
+        "command": "/usr/local/bin/codex-mcp"
+      }
+    }
+  },
+  
+  "// Instructions": [
+    "1. Copy this configuration to your actual claude_desktop_config.json",
+    "2. Update the path in 'args' to the correct location of index.js",
+    "3. Keep your existing MCP configurations",
+    "4. Restart Claude Desktop",
+    "5. Test with: 'Use the collaborate tool to analyze...' "
+  ]
+}

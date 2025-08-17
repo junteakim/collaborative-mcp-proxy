@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "collaborative-proxy": {
+      "command": "node",
+      "args": ["/private/tmp/collaborative-workspace/mcp-proxy-server/simple-collaborative.js"],
+      "description": "Multi-AI collaborative analysis system for Claude Code"
+    }
+  }
+}

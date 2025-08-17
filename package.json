@@ -1,0 +1,30 @@
+{
+  "name": "collaborative-mcp-proxy",
+  "version": "1.0.0",
+  "description": "MCP Proxy server for collaborative AI analysis using existing login-based MCPs",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.3",
+    "node-json-rpc": "^0.0.1",
+    "portfinder": "^1.0.37",
+    "winston": "^3.17.0"
+  },
+  "keywords": [
+    "mcp",
+    "proxy",
+    "collaborative",
+    "ai",
+    "gemini",
+    "codex"
+  ],
+  "author": "Collaborative AI Team",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
